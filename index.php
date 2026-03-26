@@ -58,11 +58,7 @@
 
     </main>
 
-    <footer class="main-footer">
-        <div class="container footer-content">
-            <p>&copy; 2026 Проект по криптографии. Никита Карташов и Евгений Титов.</p>
-        </div>
-    </footer>
+    <?php include 'footer.php'; ?>
 
 </body>
 </html>

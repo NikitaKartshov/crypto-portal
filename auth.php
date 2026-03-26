@@ -1,7 +1,7 @@
 <?php include 'header.php'; ?>
 
-<main class="container">
-    <section class="auth-container" style="max-width: 450px; margin: 50px auto; background: #1e293b; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+<main class="container" style="min-height: 75vh; display: flex; flex-direction: column; justify-content: center;">
+    <section class="auth-container" style="max-width: 450px; width: 100%; margin: 50px auto; background: #1e293b; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
         
         <div class="auth-tabs" style="display: flex; cursor: pointer; border-bottom: 1px solid #334155;">
             <div id="tab-login" onclick="switchTab('login')" style="flex: 1; padding: 15px; text-align: center; color: white; background: #334155; font-weight: bold;">Вход</div>
