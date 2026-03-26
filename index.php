@@ -1,48 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Криптография - Обучающий портал</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <header class="main-header">
-        <div class="container header-content">
-            <div class="logo">
-                <a href="index.html">
-                    <span class="logo-icon">🔒</span> Криптография
-                </a>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="theory.html">Теория</a></li>
-                    <li><a href="practice.html">Практика</a></li>
-                    <li><a href="tools.html">Инструменты</a></li>
-                </ul>
-            </nav>
-            <div class="user-profile">
-                <div class="profile-trigger">
-                    <div class="avatar-placeholder"></div>
-                    <img src="icons/chevron-down.svg" class="arrow-down" alt="Открыть меню">
-                </div>
-                <div class="dropdown-menu">
-                    <div class="dropdown-header">
-                        <div class="avatar-large"></div>
-                        <p class="user-name">Никита Карташов</p>
-                    </div>
-                    <ul class="dropdown-list">
-                        <li><a href="#">Настройки</a></li>
-                        <li><a href="#">Помощь</a></li>
-                        <li><hr></li>
-                        <li><a href="#" class="logout">Выйти</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </header>
-
+<?php include 'header.php'; ?>
     <main class="container">
         
         <section class="osnova-section">
@@ -75,7 +31,7 @@
                 <div class="card">
                     <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
                     <h3>Практика</h3>
-                    <p style="color: #64748b; font-size: 14px; margin-top: 10px;">Решай интересные кейсы и проверяй свои навыки на практике.</p>
+                    <p style="color: #64748b; font-size: 14px; margin-top: 10px;"></p>
                     <a href="practice.html" style="text-decoration: none;">
                         <button class="btn-primary">К задачам</button>
                     </a>
