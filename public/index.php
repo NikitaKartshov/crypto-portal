@@ -1,4 +1,4 @@
-<?php include 'header.php'; ?>
+<?php include '../templates/header.php'; ?>
     <main class="container">
         
         <section class="osnova-section">
@@ -58,7 +58,7 @@
 
     </main>
 
-    <?php include 'footer.php'; ?>
+    <?php include '../templates/footer.php'; ?>
 
 </body>
 </html>

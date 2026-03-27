@@ -1,14 +1,20 @@
-<?php include 'header.php'; ?>
+<?php include '../templates/header.php'; ?>
 
 <main class="container" style="min-height: 75vh; display: flex; flex-direction: column; justify-content: center;">
     <section class="auth-container" style="max-width: 450px; width: 100%; margin: 50px auto; background: #1e293b; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
         
         <div class="auth-tabs" style="display: flex; cursor: pointer; border-bottom: 1px solid #334155;">
             <div id="tab-login" onclick="switchTab('login')" style="flex: 1; padding: 15px; text-align: center; color: white; background: #334155; font-weight: bold;">Вход</div>
-            <div id="tab-register" onclick="switchTab('register')" style="flex: 1; padding: 15px; text-align: center; color: #94a3b8; font-weight: bold;">Регистрация</div>
+            <div id="tab-register" onclick="switchTab('register')" style="flex: 1; padding: 15px; text-align: center; color: #94a3b8; font-weight: transparent;">Регистрация</div>
         </div>
 
         <div style="padding: 30px;">
+            <?php if (isset($_GET['error'])): ?>
+                <div style="background: #7f1d1d; color: #fecaca; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 14px;">
+                    Неверный логин или пароль
+                </div>
+            <?php endif; ?>
+
             <form id="form-login" action="login_handler.php" method="POST">
                 <div style="margin-bottom: 15px;">
                     <label style="color: #94a3b8; display: block; margin-bottom: 5px;">Логин</label>
@@ -18,7 +24,7 @@
                     <label style="color: #94a3b8; display: block; margin-bottom: 5px;">Пароль</label>
                     <input type="password" name="password" required style="width: 100%; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px;">
                 </div>
-                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: bold;">Войти</button>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Войти</button>
             </form>
 
             <form id="form-register" action="registration_handler.php" method="POST" style="display: none;">
@@ -30,7 +36,7 @@
                     <label style="color: #94a3b8; display: block; margin-bottom: 5px;">Пароль</label>
                     <input type="password" name="password" required style="width: 100%; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px;">
                 </div>
-                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold;">Создать аккаунт</button>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Создать аккаунт</button>
             </form>
         </div>
     </section>
@@ -61,4 +67,4 @@ function switchTab(type) {
 }
 </script>
 
-<?php include 'footer.php'; ?>
+<?php include '../templates/footer.php'; ?>
