@@ -11,7 +11,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <title>Криптография - Обучающий портал</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Добавим микро-стиль для фиксации стрелочки, если в CSS его нет */
         .profile-trigger {
             display: flex;
             align-items: center;
@@ -24,24 +23,27 @@ if (session_status() === PHP_SESSION_NONE) {
         .user-profile:hover .arrow-down-svg {
             transform: rotate(180deg);
         }
-        /* Убедимся, что меню скрыто и появляется при наведении */
         .dropdown-menu {
             display: none;
             position: absolute;
             right: 0;
             top: 100%;
             z-index: 1000;
+            padding-top: 10px;
+            margin-top: 0;
         }
         .user-profile:hover .dropdown-menu {
             display: block;
         }
         .user-profile {
             position: relative;
+            display: flex;
+            align-items: center;
+            height: 100%;
         }
     </style>
 </head>
 <body>
-
     <header class="main-header">
         <div class="container header-content">
             <div class="logo">
@@ -49,7 +51,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     <span class="logo-icon">🔒</span> Криптография
                 </a>
             </div>
-            
             <nav class="main-nav">
                 <ul>
                     <li><a href="theory.php">Теория</a></li>
@@ -57,17 +58,15 @@ if (session_status() === PHP_SESSION_NONE) {
                     <li><a href="tools.php">Инструменты</a></li>
                 </ul>
             </nav>
-
             <div class="user-profile">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <div class="profile-trigger">
                         <div class="avatar-placeholder"></div>
-                        
+                        <span style="color: white;"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
                         <svg class="arrow-down-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M6 9L12 15L18 9" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-
                     <div class="dropdown-menu">
                         <div class="dropdown-header">
                             <div class="avatar-large"></div>
