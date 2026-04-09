@@ -1,0 +1,72 @@
+{% extends 'portal/base.html' %}
+{% load markdownify %}
+
+{% block content %}
+<main class="content-wrapper"> 
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-info">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'theory' %}" class="text-decoration-none text-info">Основы криптографии</a></li>
+                <li class="breadcrumb-item active text-secondary" aria-current="page">{{ article.title }}</li>
+            </ol>
+        </nav>
+
+        <article class="module-item" style="display: block; cursor: default; position: relative;">
+            <div class="d-flex justify-content-between align-items-start mb-4 gap-3">
+                <h1 class="text-info mb-0">{{ article.title }}</h1>
+                <a href="{% url 'theory' %}" class="btn-primary" style="white-space: nowrap;">Назад к списку</a>
+            </div>
+            
+            {% if user.is_staff %}
+            <div class="admin-controls mb-4 p-3 rounded-4" style="background: rgba(255, 255, 255, 0.03); border: 1px dashed #475569;">
+                <span class="text-secondary me-3 font-monospace small">⚙️ Управление:</span>
+                <a href="{% url 'article_update' article.id %}" class="btn btn-sm btn-outline-info me-2">Редактировать</a>
+                <form action="{% url 'article_delete' article.id %}" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Точно удалить статью?');">Удалить</button>
+                </form>
+            </div>
+            {% endif %}
+
+            {% if article.image %}
+                <div class="article-image-container mb-4">
+                    {% if article.image_position == 'top' %}
+                        <img src="{{ article.image.url }}" class="img-fluid rounded-4 border border-secondary" style="width: 100%; max-height: 500px; object-fit: cover;">
+                    {% elif article.image_position == 'left' %}
+                        <img src="{{ article.image.url }}" class="float-start me-4 mb-3 rounded-4 border border-secondary" style="max-width: 40%;">
+                    {% elif article.image_position == 'right' %}
+                        <img src="{{ article.image.url }}" class="float-end ms-4 mb-3 rounded-4 border border-secondary" style="max-width: 40%;">
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="article-text text-light" style="font-size: 1.1rem; line-height: 1.8;">
+                {{ article.content|markdownify }}
+            </div>
+
+            <div style="clear: both;"></div>
+        </article>
+    </div>
+</main>
+
+<button id="backToTop" class="back-to-top" title="Наверх">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script>
+    const backToTopBtn = document.getElementById("backToTop");
+
+    window.onscroll = function() {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            backToTopBtn.classList.add("show");
+        } else {
+            backToTopBtn.classList.remove("show");
+        }
+    };
+
+    backToTopBtn.onclick = function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+</script>
+{% endblock %}

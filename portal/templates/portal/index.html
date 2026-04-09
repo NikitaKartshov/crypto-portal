@@ -1,0 +1,51 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<main class="container" style="margin-top: 40px;">
+    <section class="osnova-section" style="background: #1e293b; padding: 60px; border-radius: 24px; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; margin-bottom: 60px;">
+        <div class="osnova-text" style="max-width: 600px;">
+            <h1 style="font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px;">Твой путь в<br><span style="color: #22d3ee;">криптографии</span> начинается здесь</h1>
+            <p style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 30px;">Освой методы шифрования от древности до наших дней на интерактивной платформе.</p>
+            <a href="{% url 'theory' %}" class="btn-primary" style="text-decoration: none; display: inline-block;">Начать обучение</a>
+        </div>
+        <div class="osnova-icons" style="font-size: 120px; filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.2));">🔐</div>
+    </section>
+
+    <section class="learning-section">
+        <h2 style="margin-bottom: 40px; text-align: center; font-size: 2rem; font-weight: 700;">Возможности портала</h2>
+        <div class="cards-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 60px;">
+            
+            <div class="card" style="background: #1e293b; border: 1px solid #334155; padding: 40px; border-radius: 20px; text-align: center; transition: transform 0.3s ease;">
+                <div class="card-emoji" style="font-size: 50px; margin-bottom: 20px;">📚</div>
+                <h3 style="margin-bottom: 15px; font-size: 1.5rem;">База знаний</h3>
+                <p style="color: #94a3b8; margin-bottom: 30px;">Интерактивные уроки по классической и современной криптографии с теорией и примерами.</p>
+                <a href="{% url 'theory' %}" class="btn-primary" style="text-decoration: none; width: 100%;">В теорию</a>
+            </div>
+
+            <div class="card" style="background: #1e293b; border: 1px solid #334155; padding: 40px; border-radius: 20px; text-align: center; transition: transform 0.3s ease;">
+                <div class="card-emoji" style="font-size: 50px; margin-bottom: 20px;">🏆</div>
+                <h3 style="margin-bottom: 15px; font-size: 1.5rem;">Практика</h3>
+                <p style="color: #94a3b8; margin-bottom: 30px;">Проверь свои навыки на реальных задачах и лабораторных работах.</p>
+                <a href="{% url 'practice' %}" class="btn-primary" style="text-decoration: none; width: 100%;">К задачам</a>
+            </div>
+
+            <div class="card" style="background: #1e293b; border: 1px solid #334155; padding: 40px; border-radius: 20px; text-align: center; transition: transform 0.3s ease;">
+                <div class="card-emoji" style="font-size: 50px; margin-bottom: 20px;">🛠️</div>
+                <h3 style="margin-bottom: 15px; font-size: 1.5rem;">Инструменты</h3>
+                <p style="color: #94a3b8; margin-bottom: 30px;">Шифруй и дешифруй сообщения онлайн с помощью встроенных сервисов.</p>
+                <a href="{% url 'tools' %}" class="btn-primary" style="text-decoration: none; width: 100%;">Открыть</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="sandbox-section" style="text-align: center; padding: 60px; background: rgba(30, 41, 59, 0.5); border-radius: 24px; border: 1px dashed #334155;">
+        <div class="sandbox-header">
+            <h3 style="margin-bottom: 20px; font-size: 1.8rem;">О проекте</h3>
+            <p style="color: #94a3b8; max-width: 800px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8;">
+                Этот портал разработан Никитой Карташовым и Евгением Титовым. Наша цель — создать удобную среду для студентов ИТ-специальностей, где сложные алгоритмы становятся понятными.
+            </p>
+        </div>
+    </section>
+</main>
+{% endblock %}

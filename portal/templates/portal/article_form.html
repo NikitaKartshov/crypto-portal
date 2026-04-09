@@ -1,0 +1,99 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<main class="content-wrapper"> 
+    <div class="container">
+        <div class="module-item" style="display: block; cursor: default; max-width: 900px; margin: 0 auto; transform: none; transition: none;">
+            <h2 class="text-info mb-4">{% if form.instance.pk %}Редактирование статьи{% else %}Новая статья{% endif %}</h2>
+            
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-4" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #f87171; border-radius: 8px;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                
+                {% for field in form %}
+                    <div class="mb-4">
+                        <label class="form-label d-block mb-2" style="color: #94a3b8;">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="mt-5 pt-4 border-top border-secondary opacity-75 d-flex gap-3">
+                    <button type="submit" class="btn-primary" style="background: #10b981;">Сохранить</button>
+                    <a href="javascript:history.back()" class="btn-primary" style="background: transparent; border: 1px solid #475569; color: #94a3b8 !important;">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+
+<style>
+    input[type="text"], 
+    input[type="number"],
+    input[type="file"], 
+    select, 
+    textarea {
+        width: 100%;
+        padding: 10px;
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+        color: white !important;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: #22d3ee !important;
+    }
+
+    .editor-toolbar { border-color: #334155; opacity: 0.8; background: #1e293b; border-radius: 8px 8px 0 0; }
+    .editor-toolbar a { color: #94a3b8 !important; }
+    .editor-toolbar a:hover, .editor-toolbar a.active { background: #334155; color: #22d3ee !important; border-color: #334155; }
+    .CodeMirror { 
+        background: #0f172a !important; 
+        border-color: #334155 !important; 
+        color: #f8fafc !important; 
+        border-radius: 0 0 8px 8px; 
+        font-family: 'Fira Code', monospace; 
+        min-height: 300px;
+    }
+    .CodeMirror-cursor { border-left-color: #22d3ee !important; }
+    .text-danger { color: #f87171 !important; font-weight: 500; }
+    
+    .content-wrapper .module-item:hover {
+        transform: none !important;
+        border-color: #334155 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var contentField = document.getElementById("id_content");
+        if(contentField) {
+            var mde = new EasyMDE({ 
+                element: contentField,
+                spellChecker: false,
+                status: false,
+                forceSync: true, 
+                autosave: {
+                    enabled: true,
+                    uniqueId: "article_editor_cache",
+                    delay: 1000,
+                },
+                toolbar: ["bold", "italic", "heading", "|", "quote", "code", "link", "image", "|", "preview", "guide"]
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,294 @@
+/* Базовые настройки страницы */
+html {
+    scrollbar-gutter: stable;
+}
+
+body {
+    background-color: #0f172a;
+    color: #f8fafc;
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Шапка */
+.main-header {
+    height: 80px;
+    background-color: #1e293b;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #334155;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo a {
+    color: #22d3ee;
+    font-size: 22px;
+    font-weight: 800;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Навигация */
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 35px;
+    margin: 0;
+}
+
+.main-nav a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.main-nav a:hover { color: #22d3ee; }
+
+/* Блок профиля и триггер выпадающего меню */
+.user-profile {
+    position: relative;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 15px;
+    height: 100%;
+    transition: background 0.2s;
+}
+
+.user-profile:hover .profile-trigger { background: #334155; }
+
+.username-text { color: white; font-weight: 500; }
+
+.avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.avatar-large {
+    width: 48px;
+    height: 48px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+}
+
+.arrow-down-svg { transition: transform 0.3s; }
+.user-profile:hover .arrow-down-svg { transform: rotate(180deg); }
+
+/* Выпадающее меню профиля */
+.dropdown-menu {
+    display: none; 
+    position: absolute;
+    top: 80px;
+    right: 0;
+    width: 240px;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 1001;
+}
+
+.user-profile:hover .dropdown-menu { display: block; }
+
+.dropdown-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #334155;
+}
+
+.dropdown-user-name { margin: 0; font-weight: 700; color: white; }
+
+.dropdown-list { list-style: none; padding: 5px 0; margin: 0; }
+
+.dropdown-list li a, 
+.dropdown-list li button {
+    width: 100%;
+    padding: 12px 20px;
+    color: #94a3b8;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.dropdown-list li a:hover, 
+.dropdown-list li button:hover { 
+    background: #334155; 
+    color: #22d3ee; 
+}
+
+.logout-link { color: #ef4444 !important; }
+.logout-link:hover { background-color: rgba(239, 68, 68, 0.1) !important; }
+
+/* Основной контентный блок */
+.content-wrapper {
+    padding: 40px 0;
+    flex-grow: 1; 
+}
+
+/* Списки модулей и карточки обучения */
+.syllabus-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.module-item {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.module-item:hover {
+    border-color: #22d3ee;
+    background-color: #253347;
+    transform: translateX(8px);
+}
+
+.content-wrapper article.module-item:hover {
+    border-color: #334155 !important;
+    background-color: #1e293b !important;
+    transform: none !important;
+    cursor: default !important;
+    transition: none !important;
+}
+
+.module-number {
+    font-size: 24px;
+    font-weight: 800;
+    color: #475569;
+    margin-right: 25px;
+    min-width: 40px;
+}
+
+.module-title {
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: #f8fafc;
+    margin: 0;
+}
+
+.module-badge {
+    font-size: 11px;
+    color: #22d3ee;
+    background: rgba(34, 211, 238, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+/* Кнопки и интерактивные элементы */
+.btn-primary {
+    background: #0891b2;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white !important;
+    font-weight: 700;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Кнопка "Наверх" */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(30, 41, 59, 0.7); /* Полупрозрачный фон */
+    color: #22d3ee;
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background-color: #22d3ee;
+    color: #0f172a;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(34, 211, 238, 0.3);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: #475569;
+}
+
+.btn-primary:hover {
+    background: #22d3ee;
+    color: #0f172a !important;
+    box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
+}
+
+/* Футер */
+.main-footer {
+    background-color: #1e293b;
+    padding: 40px 0;
+    margin-top: auto; 
+    text-align: center;
+    border-top: 1px solid #334155;
+    color: #64748b;
+}
