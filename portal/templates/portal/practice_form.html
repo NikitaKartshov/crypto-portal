@@ -1,0 +1,105 @@
+{% extends 'portal/base.html' %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<style>
+    .static-form.module-item:hover { transform: none !important; transition: none !important; }
+    input[type="text"], input[type="url"], select, textarea {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 12px;
+        background: var(--bg-dark) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--text-info) !important; }
+    .btn-custom-align {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 45px;
+        padding: 0 25px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+    /* Скрываем стандартную textarea, чтобы на её месте отрисовать красивый редактор */
+    #id_description { display: none; }
+    .CodeMirror {
+        height: 300px !important;
+        background: var(--bg-dark) !important;
+        border-color: var(--border-color) !important;
+        font-family: 'Fira Code', monospace;
+    }
+    .editor-toolbar {
+        background: var(--bg-card) !important;
+        border-color: var(--border-color) !important;
+        border-radius: 8px 8px 0 0;
+    }
+    .editor-toolbar a { color: var(--text-muted) !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div style="max-width: var(--form-max-width); margin: 0 auto;">
+        <h1 class="h2 text mb-4">{% if form.instance.pk %}Редактировать{% else %}Создать{% endif %} задание</h1>
+        
+        <form method="POST" class="module-item p-4 static-form" style="display: block !important;">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label text-secondary">Название задания</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors }}</div>{% endif %}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-secondary">Связанная теория</label>
+                    {{ form.related_article }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-secondary">Сложность</label>
+                    {{ form.difficulty }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label text-secondary">Описание (Markdown)</label>
+                    {{ form.description }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label text-secondary">Зашифрованный текст</label>
+                    {{ form.task_text }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-secondary">Правильный ответ</label>
+                    {{ form.correct_answer }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-secondary">Подсказка</label>
+                    {{ form.hint }}
+                </div>
+            </div>
+            
+            <div class="mt-5 pt-2 d-flex gap-3">
+                <button type="submit" class="btn-primary border-0 btn-custom-align">
+                    Сохранить задание
+                </button>
+                <a href="{% url 'practice' %}" class="btn btn-outline-secondary btn-custom-align">
+                    Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+    const mde = new EasyMDE({
+        element: document.getElementById("id_description"),
+        spellChecker: false,
+        status: false,
+        forceSync: true, // Обеспечивает мгновенную передачу текста из редактора в скрытую textarea формы
+        placeholder: "Опишите суть задания...",
+        toolbar: ["bold", "italic", "heading", "|", "quote", "code", "link", "|", "preview"]
+    });
+</script>
+{% endblock %}

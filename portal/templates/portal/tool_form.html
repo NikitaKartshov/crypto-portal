@@ -1,0 +1,78 @@
+{% extends 'portal/base.html' %}
+{% block extra_css %}
+<style>
+    /* Отключаем ховер-эффекты карточки для формы, чтобы она была статичной */
+    .static-form.module-item:hover {
+        transform: none !important;
+        transition: none !important;
+    }
+    /* Стилизация полей ввода под темную тему */
+    input[type="text"], input[type="url"], select, textarea {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 12px;
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px;
+        color: white;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #0dcaf0 !important;
+    }
+    .help-text {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div style="max-width: var(--form-max-width); margin: 0 auto;">
+        <h1 class="h2 text mb-4">
+            {% if form.instance.pk %}Редактировать{% else %}Добавить{% endif %} инструмент
+        </h1>
+        
+        <form method="POST" class="module-item p-4 static-form" style="display: block !important;">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label text-secondary">Название инструмента</label>
+                    {{ form.title }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-secondary">Тип шифра</label>
+                    {{ form.tool_type }}
+                    <div class="help-text">
+                        Пример: <code>caesar</code>. Должно совпадать с именем JS-файла.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label text-secondary">Описание</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label text-secondary">Связанная задача</label>
+                    {{ form.related_task }}
+                    <div class="help-text">
+                        Инструмент откроется только после того, как пользователь решит выбранную задачу.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 pt-2 d-flex gap-3">
+                <button type="submit" class="btn-primary border-0 btn-custom-align">
+                    Сохранить инструмент
+                </button>
+                <a href="{% url 'tools' %}" class="btn btn-outline-secondary btn-custom-align">
+                    Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

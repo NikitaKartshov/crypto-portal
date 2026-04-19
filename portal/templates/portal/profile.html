@@ -1,0 +1,39 @@
+{% extends "portal/base.html" %}
+{% block content %}
+<div class="container mt-5 mb-5 text-center">
+    <div class="feature-card" style="max-width: 600px; margin: 0 auto; min-height: auto; padding: 40px;">
+        
+        {% if target_user.profile.avatar %}
+            <img src="{{ target_user.profile.avatar.url }}" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--accent-blue);">
+        {% else %}
+            <div class="rounded-circle mb-4 d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; background: #334155; margin: 0 auto; font-size: 64px; color: #94a3b8;">
+                {% if target_user.profile.is_private and target_user != request.user %}
+                    А
+                {% else %}
+                    {{ target_user.username|make_list|first|upper }}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <h2 style="">
+            {% if target_user.profile.is_private and target_user != request.user %}
+                Аноним #{{ target_user.id }}
+            {% else %}
+                {{ target_user.first_name }} {{ target_user.last_name }}
+            {% endif %}
+        </h2>
+        
+        <p class="text-muted">
+            {% if target_user.profile.is_private and target_user != request.user %}
+                Пользователь скрыл свои данные
+            {% else %}
+                @{{ target_user.username }}
+            {% endif %}
+        </p>
+
+        {% if target_user == request.user %}
+            <a href="{% url 'settings' %}" class="btn-primary mt-4">Редактировать профиль</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="tool-card p-4 mb-4" style="background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+            <div>
+                <h1 class="text-info h3 mb-1">{{ tool.title }}</h1>
+                <p class="text-secondary mb-0">{{ tool.description }}</p>
+            </div>
+            {% if user.is_staff %}
+            <div class="d-flex gap-2">
+                <a href="{% url 'tool_update' tool.id %}" class="btn btn-sm btn-outline-warning">
+                    <i class="bi bi-pencil"></i> Редактировать
+                </a>
+                <a href="{% url 'tool_delete' tool.id %}" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash"></i> Удалить
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row g-4 align-items-center">
+            <div class="col-md-5">
+                <label id="label-input" class="form-label text-info">Исходный текст</label>
+                <textarea id="input-text" class="form-control" rows="6" placeholder="Введите текст здесь..."></textarea>
+            </div>	
+            
+            <div class="col-md-2 text-center">
+                <button id="swap-btn" class="btn btn-outline-info d-inline-flex align-items-center justify-content-center rounded-circle"
+                        style="width: 45px; height: 45px; padding: 0 0 5px 0; line-height: 1; border-width: 2px;" 
+                        title="Поменять местами">
+                    <span style="font-size: 1.6rem;">⇄</span>
+                </button>
+            </div>
+            
+            <div class="col-md-5">
+                <label id="label-output" class="form-label text-secondary">Результат</label>
+                <textarea id="output-text" class="form-control" rows="6" readonly placeholder="Результат появится здесь..."></textarea>
+            </div>
+        </div>
+
+        <div class="row mt-4 g-3">
+            <div class="col-md-4">
+                <input type="text" id="cipher-key" class="form-control" placeholder="Ключ / Параметр">
+            </div>
+            <div class="col-md-8">
+                <button id="action-btn" class="btn btn-primary w-100 py-2 border-0" 
+                        style="border-radius: 8px; background-color: #0891b2 !important;">
+                    Зашифровать
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'tools' %}" class="btn btn-outline-secondary px-4 d-inline-flex align-items-center">
+            К списку инструментов
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Динамическая загрузка JS-файла с логикой конкретного шифра
+    {% if tool.tool_type %}
+        const script = document.createElement('script');
+        script.src = "{% static tool.get_js_file %}";
+        script.onload = function() {
+            console.log('Шифр "{{ tool.tool_type }}" успешно загружен.');
+        };
+        script.onerror = function() {
+            alert('Ошибка загрузки алгоритма шифрования.');
+        };
+        document.head.appendChild(script);
+    {% endif %}
+
+    let isEncryptMode = true;
+
+    // Элементы управления
+    const swapBtn = document.getElementById('swap-btn');
+    const actionBtn = document.getElementById('action-btn');
+    const inputLabel = document.getElementById('label-input');
+    const outputLabel = document.getElementById('label-output');
+    const inputText = document.getElementById('input-text');
+    const outputText = document.getElementById('output-text');
+    const cipherKey = document.getElementById('cipher-key');
+
+    // Логика переключения между Шифрованием и Расшифрованием
+    swapBtn.addEventListener('click', () => {
+        isEncryptMode = !isEncryptMode;
+        
+        if (isEncryptMode) {
+            actionBtn.textContent = "Зашифровать";
+            actionBtn.style.setProperty('background-color', '#0891b2', 'important');
+            inputLabel.textContent = "Исходный текст";
+            inputLabel.className = "form-label text-info";
+            outputLabel.textContent = "Результат";
+        } else {
+            actionBtn.textContent = "Расшифровать";
+            actionBtn.style.setProperty('background-color', '#10b981', 'important');
+            inputLabel.textContent = "Шифротекст";
+            inputLabel.className = "form-label text-success";
+            outputLabel.textContent = "Открытый текст";
+        }
+
+        // Автоматический перенос текста из результата в ввод при смене режима
+        if (outputText.value) {
+            inputText.value = outputText.value;
+            outputText.value = '';
+        }
+    });
+
+    // Вызов функций encrypt/decrypt из подключенного внешнего JS-файла
+    actionBtn.addEventListener('click', () => {
+        const text = inputText.value.trim();
+        const key = cipherKey.value.trim();
+
+        if (!text) {
+            alert("Введите текст для обработки");
+            return;
+        }
+
+        try {
+            if (isEncryptMode) {
+                if (typeof encrypt === 'function') {
+                    outputText.value = encrypt(text, key);
+                } else {
+                    throw new Error("Функция encrypt() не найдена");
+                }
+            } else {
+                if (typeof decrypt === 'function') {
+                    outputText.value = decrypt(text, key);
+                } else {
+                    throw new Error("Функция decrypt() не найдена");
+                }
+            }
+        } catch (e) {
+            alert("Ошибка: " + e.message);
+        }
+    });
+</script>
+{% endblock %}

@@ -1,79 +1,82 @@
 {% extends "portal/base.html" %}
 
 {% block content %}
-<main class="container py-5">
+<div class="container py-5">
     <div class="course-header mb-5">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-info">Главная</a></li>
-                <li class="breadcrumb-item active text-secondary">Основы криптографии</li>
+                <li class="breadcrumb-item active text-secondary">Теория</li>
             </ol>
         </nav>
-        <h1 class="display-5 fw-bold text-white">Основы криптографии</h1>
-        <p class="lead text-secondary">Курс о криптографии.</p>
+        <h1 class="display-5 fw-bold">Основы криптографии</h1>
+        <p class="lead text-secondary">Изучайте теорию шифрования шаг за шагом</p>
     </div>
 
     <div class="row">
         <div class="col-lg-8">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 text-white mb-0">Содержание курса</h2>
-                
+                <h2 class="h4 mb-0">Содержание курса</h2>
                 {% if user.is_staff %}
-                <a href="{% url 'article_create' %}" class="btn-primary" style="background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <a href="{% url 'article_create' %}" class="btn btn-success d-flex align-items-center rounded-pill px-3 text-decoration-none">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
                     Создать статью
                 </a>
                 {% endif %}
             </div>
-            
+
             <div class="syllabus-list">
                 {% for article in articles %}
-                <a href="{% url 'article_detail' article.id %}" class="module-item">
-                    <div class="module-number">
-                        {% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}
+                <a href="{% url 'article_detail' article.id %}" 
+                   class="module-item {% if article.is_completed %}completed-highlight{% endif %}">
+                    <div class="module-item-left">
+                        <div class="module-number">
+                            {% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}
+                        </div>
+                        <div class="module-title">{{ article.title|escape }}</div>
                     </div>
-                    
-                    <div class="module-info">
-                        <div class="module-title">{{ article.title }}</div>
-                        <div class="module-meta">
-   			<span class="module-badge">Текст</span>
-    			<span><i class="bi bi-clock me-1"></i> {{ article.get_reading_time }} мин.</span>
-			</div>
-                    </div>
-
-                    <div class="module-action">
-                        <i class="bi bi-chevron-right text-secondary"></i>
+                    <div class="module-item-right">
+                        <div class="module-action">
+                            <i class="bi bi-chevron-right text-secondary"></i>
+                        </div>
                     </div>
                 </a>
                 {% empty %}
-                <div class="text-center py-5 border border-secondary border-dashed rounded-4">
-                    <i class="bi bi-journal-x display-4 text-secondary mb-3"></i>
-                    <p class="text-secondary">Материалы в данном разделе скоро появятся.</p>
+                <div class="text-center py-5">
+                    <p class="text-secondary">Статьи скоро появятся. Следите за обновлениями!</p>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
         <div class="col-lg-4">
-            <div class="sidebar-card">
-                <h5 class="text-white mb-3">Ваш прогресс</h5>
-                
-                <div class="progress-container">
-                    <div class="progress-fill" style="width: 0%"></div>
+            <div class="sidebar-card p-4 rounded-4 bg-soft-dark border border-secondary">
+                <h5 class="mb-3">Ваш прогресс</h5>
+                <div class="progress-container mb-2" style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div class="progress-fill" style="width: {{ progress_percent }}%; background: #0dcaf0; height: 100%; transition: width 0.5s ease;"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <p class="small text-secondary mb-0">Завершено: {{ completed_count }} из {{ articles|length }}</p>
+                    <span class="badge bg-info text-dark">{{ progress_percent }}%</span>
                 </div>
                 
-                <div class="d-flex justify-content-between align-items-center mt-2 mb-4">
-                    <p class="small text-secondary mb-0">Завершено: 0 из {{ articles|length }}</p>
-                    <span class="badge bg-secondary-subtle text-dark">0%</span>
-                </div>
-                
-                <hr class="border-secondary opacity-25">
-                
-                <a href="#" class="btn-stepik">
-                    {% if articles %}Продолжить обучение{% else %}К списку курсов{% endif %}
-                </a>
+                {% if next_article %}
+                    <a href="{% url 'article_detail' next_article.id %}" 
+                       class="btn-primary w-100 d-flex justify-content-center text-decoration-none">
+                        {% if progress_percent == 0 %}Начать обучение
+                        {% elif progress_percent == 100 %}Повторить курс
+                        {% else %}Продолжить обучение{% endif %}
+                    </a>
+                {% else %}
+                    <button class="btn btn-primary w-100 justify-content-center" disabled style="opacity: 0.5;">
+                        Курс скоро начнётся
+                    </button>
+                {% endif %}
             </div>
         </div>
     </div>
-</main>
+</div>
 {% endblock %}

@@ -1,22 +1,91 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru" data-bs-theme="dark">
+<html lang="ru" data-bs-theme="{% if user.is_authenticated and user.profile %}{{ user.profile.theme }}{% else %}dark{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Криптография - Обучающий портал</title>
+    <title>EdyCrypto – обучающий портал</title>
+    
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'portal/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <style>
+        /* Отображение изображений в аватарах */
+        .avatar-placeholder img, .avatar-large img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+        }
+
+        /* Выпадающее меню профиля */
+        .dropdown-menu {
+            display: none; 
+            position: absolute; 
+            right: 0; 
+            top: 100%; 
+            z-index: 1000;
+            background: var(--bg-card, #1e293b);
+            border: 1px solid var(--border-color, #334155);
+            border-radius: 12px;
+            min-width: 220px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+        .dropdown-menu.active { display: block !important; }
+        .user-profile { position: relative; }
+
+        /* Элементы списка в меню */
+        .dropdown-list { list-style: none; padding: 0; margin: 0; }
+        
+        .dropdown-list li a, 
+        .dropdown-list li .logout-button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: var(--text-main, #f8fafc);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        /* Интерактивные состояния ссылок */
+        .dropdown-list li a:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #3b82f6;
+        }
+
+        /* Стилизация кнопки выхода */
+        .dropdown-list li .logout-button {
+            color: #ef4444;
+        }
+        .dropdown-list li .logout-button:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color, #334155);
+        }
+    </style>
 </head>
 <body>
     <header class="main-header">
-        <div class="container header-content">
+        <div class="header-content w-100">
             <div class="logo">
-                <a href="{% url 'home' %}">
-                    <span class="logo-icon">🔒</span> Криптография
+                <a href="{% url 'home' %}" style="display: flex; align-items: center; gap: 8px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    EdyCrypto
                 </a>
             </div>
-
             <nav class="main-nav">
                 <ul>
                     <li><a href="{% url 'theory' %}">Теория</a></li>
@@ -24,62 +93,116 @@
                     <li><a href="{% url 'tools' %}">Инструменты</a></li>
                 </ul>
             </nav>
-
             <div class="user-profile">
                 {% if user.is_authenticated %}
-                    <div class="profile-trigger">
-    <span class="username-text">{{ user.username }}</span>
-    
-    <div class="avatar-placeholder"></div>
-    
-    <svg class="arrow-down-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6 9L12 15L18 9" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-</div>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-header">
-                            <div class="avatar-large"></div>
-                            <p class="dropdown-user-name">{{ user.username }}</p>
-                        </div>
-                        <ul class="dropdown-list">
-                            <li>
-                                <a href="#">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                                    Настройки
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                                    Помощь
-                                </a>
-                            </li>
-                            <li>
-                                <form action="{% url 'logout' %}" method="post" style="display: block;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="logout-link" style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: #ef4444; background: none; border: none; width: 100%; text-align: left; cursor: pointer; font-size: 0.95rem; font-family: inherit;">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                        Выйти
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
+                <div class="profile-trigger" id="profileTrigger" style="cursor: pointer;">
+                    <div class="avatar-placeholder d-flex align-items-center justify-content-center" style="background: #334155; font-weight: bold; color: #94a3b8; font-size: 14px;">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="avatar">
+                        {% else %}
+                            {{ user.username|make_list|first|upper }}
+                        {% endif %}
                     </div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+
+                <div class="dropdown-menu" id="profileMenu">
+                    <div class="dropdown-header text-center">
+                        <div class="avatar-large mx-auto d-flex align-items-center justify-content-center" style="background: #334155; font-size: 32px; font-weight: bold; color: #94a3b8;">
+                            {% if user.profile.avatar %}
+                                <img src="{{ user.profile.avatar.url }}" alt="avatar">
+                            {% else %}
+                                {{ user.username|make_list|first|upper }}
+                            {% endif %}
+                        </div>
+                        <p class="dropdown-user-name mt-2 mb-0">
+                            {% if user.first_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}
+                        </p>
+                    </div>
+                    <ul class="dropdown-list">
+                        <li>
+                            <a href="{% url 'profile' user.id %}">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                Мой профиль
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'settings' %}">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                Настройки
+                            </a>
+                        </li>
+                        <li>
+                            <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-button">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    Выйти
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn-primary" style="text-decoration: none;">Войти / Регистрация</a>
+                    <a href="{% url 'login' %}" class="btn-primary" style="text-decoration: none;">Вход / Регистрация</a>
                 {% endif %}
             </div>
         </div>
     </header>
+
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <main class="content-wrapper">
         {% block content %}{% endblock %}
     </main>
 
     <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2026 Интерактивная платформа для изучения основ криптографии. Никита Карташов и Евгений Титов.</p>
+        <div class="container text-center">
+            <p>&copy; 2026 Интерактивная платформа для изучения основ криптографии.</p>
+            <p>Авторы: Никита Карташов и Евгений Титов.</p>
+            <p>
+                <a href="{% url 'privacy_policy' %}" class="footer-link">Политика конфиденциальности</a>
+            </p>
         </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'portal/script.js' %}"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const trigger = document.getElementById('profileTrigger');
+            const menu = document.getElementById('profileMenu');
+            
+            if (trigger && menu) {
+                // Переключение видимости меню профиля
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('active');
+                });
+                
+                // Закрытие при клике вне области меню
+                document.addEventListener('click', function(e) {
+                    if (!menu.contains(e.target) && !trigger.contains(e.target)) {
+                        menu.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

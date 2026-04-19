@@ -1,0 +1,179 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-0 border rounded-4 overflow-hidden shadow-sm" style="min-height: 650px; border-color: var(--border-color) !important;">
+        
+        <div class="col-md-3 border-end" style="border-color: var(--border-color) !important; background: var(--bg-card);">
+            <div class="d-flex flex-column p-3 gap-1">
+                <a href="?tab=profile" class="nav-link-custom {% if active_tab == 'profile' or not active_tab %}active{% endif %}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Профиль
+                </a>
+                <a href="?tab=site" class="nav-link-custom {% if active_tab == 'site' %}active{% endif %}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    Сайт
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9 p-5" style="background: var(--bg-main);">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success py-2 small mb-4 border-0 shadow-sm">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if active_tab == 'profile' or not active_tab %}
+                <h2 class="mb-4" style="color: var(--accent-blue); font-weight: 700;">Личные данные</h2>
+                
+                <form method="POST" enctype="multipart/form-data" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_profile" value="1">
+                    
+                    <div class="row align-items-start">
+                        <div class="col-md-7">
+                            <div class="django-form-custom">
+                                <div class="form-group-wrapper">
+                                    {{ u_form.as_p }}
+                                    {{ p_form.as_p }}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary mt-4 px-4">Сохранить изменения</button>
+                        </div>
+                        
+                        <div class="col-md-5 text-center mt-md-0 mt-4">
+                            <div class="avatar-edit-container">
+                                {% if request.user.profile.avatar %}
+                                    <img src="{{ request.user.profile.avatar.url }}" class="rounded-circle mb-3 shadow-lg" style="width: 160px; height: 160px; object-fit: cover; border: 4px solid var(--accent-blue);">
+                                {% else %}
+                                    <div class="rounded-circle mb-3 d-flex align-items-center justify-content-center shadow-lg mx-auto" style="width: 160px; height: 160px; background: #334155; font-size: 54px; color: #94a3b8; border: 4px solid #475569;">
+                                        {{ request.user.username|make_list|first|upper }}
+                                    </div>
+                                {% endif %}
+                                <p class="text-muted small">Фото профиля</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-5 pt-5 border-top" style="border-color: var(--border-color) !important;">
+                    <h4 class="mb-4 text-danger d-flex align-items-center gap-2" style="font-weight: 600;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Безопасность
+                    </h4>
+                    
+                    <button type="button" class="btn btn-sm btn-outline-secondary mb-4" onclick="document.getElementById('password-form-wrapper').classList.toggle('d-none')">
+                        Изменить пароль
+                    </button>
+
+                    <div id="password-form-wrapper" class="d-none">
+                        <form method="POST" style="max-width: 450px;" autocomplete="new-password">
+                            {% csrf_token %}
+                            <input type="text" style="display:none">
+                            <input type="password" style="display:none">
+                            <input type="hidden" name="change_password" value="1">
+                            <div class="django-form-custom mb-3 password-section">
+                                {{ pass_form.as_p }}
+                            </div>
+                            <button type="submit" class="btn btn-outline-danger">Обновить пароль</button>
+                        </form>
+                    </div>
+                </div>
+
+            {% elif active_tab == 'site' %}
+                <h2 class="mb-4" style="color: var(--accent-blue); font-weight: 700;">Настройки интерфейса</h2>
+                <div class="card bg-card p-4 border-0 shadow-sm" style="background: var(--bg-card); border-radius: 15px; border: 1px solid var(--border-color) !important;">
+                    <p class="text-secondary mb-3">Выберите цветовую схему портала:</p>
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn theme-btn {% if user.profile.theme == 'dark' %}active{% endif %}" data-theme-value="dark">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                            Темная
+                        </button>
+                        <button type="button" class="btn theme-btn {% if user.profile.theme == 'light' %}active{% endif %}" data-theme-value="light">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg>
+                            Светлая
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('[data-theme-value]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const theme = this.dataset.themeValue;
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            fetch('{% url "update_theme" %}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+                body: JSON.stringify({ 'theme': theme })
+            });
+        });
+    });
+
+    window.onload = function() {
+        if (document.activeElement) document.activeElement.blur();
+        const passInputs = document.querySelectorAll('input[type="password"]');
+        passInputs.forEach(input => {
+            input.setAttribute('readonly', true);
+            setTimeout(() => input.removeAttribute('readonly'), 600);
+        });
+    };
+</script>
+
+<style>
+    .nav-link-custom { display: flex; align-items: center; gap: 12px; padding: 12px 16px; text-decoration: none; color: var(--text-muted); border-radius: 10px; transition: 0.2s; font-weight: 500; }
+    .nav-link-custom:hover { background: rgba(34, 211, 238, 0.1); color: var(--accent-blue); }
+    .nav-link-custom.active { background: var(--accent-blue); color: #000 !important; font-weight: 600; }
+
+    .django-form-custom p { margin-bottom: 1.5rem; display: flex; flex-direction: column; }
+    .django-form-custom label { display: block; margin-bottom: 0.4rem; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+    
+    .django-form-custom input:not([type="checkbox"]):not([type="file"]) {
+        width: 100%; padding: 10px 14px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main);
+    }
+
+    .django-form-custom p:has(input[type="file"]) {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
+
+    .django-form-custom input[type="file"] { margin-top: 5px; color: var(--text-muted); width: 100%; }
+    
+    .django-form-custom input[type="checkbox"] { 
+        width: 16px; height: 16px; margin: 0; order: 2;
+    }
+    
+    .django-form-custom p a { color: var(--accent-blue); text-decoration: none; font-weight: 600; }
+
+    .django-form-custom p label[for$="-clear_id"] {
+        display: inline-flex !important;
+        align-items: center;
+        margin: 0;
+        text-transform: none;
+        order: 3;
+        gap: 5px;
+    }
+
+    .theme-btn { border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); padding: 12px 24px; border-radius: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; }
+    .theme-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #000; }
+</style>
+{% endblock %}
