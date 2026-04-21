@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EdyCrypto – обучающий портал</title>
+    <title>EduCrypto – обучающий портал</title>
     
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     
@@ -33,7 +33,7 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
         }
         .dropdown-menu.active { display: block !important; }
-        .user-profile { position: relative; }
+        .user-profile { position: relative; height: 100%; display: flex; align-items: center; }
 
         /* Элементы списка в меню */
         .dropdown-list { list-style: none; padding: 0; margin: 0; }
@@ -83,7 +83,7 @@
             <div class="logo">
                 <a href="{% url 'home' %}" style="display: flex; align-items: center; gap: 8px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    EdyCrypto
+                    EduCrypto
                 </a>
             </div>
             <nav class="main-nav">
@@ -103,7 +103,7 @@
                             {{ user.username|make_list|first|upper }}
                         {% endif %}
                     </div>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    <svg class="arrow-down-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                 </div>
 
                 <div class="dropdown-menu" id="profileMenu">
@@ -120,6 +120,25 @@
                         </p>
                     </div>
                     <ul class="dropdown-list">
+                        <li class="mobile-nav-item">
+                            <a href="{% url 'theory' %}">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                Теория
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="{% url 'practice' %}">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                Практика
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="{% url 'tools' %}">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                                Инструменты
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item"><div style="height: 1px; background: var(--border-color); margin: 5px 20px;"></div></li>
                         <li>
                             <a href="{% url 'profile' user.id %}">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -148,7 +167,26 @@
                     </ul>
                 </div>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn-primary" style="text-decoration: none;">Вход / Регистрация</a>
+                    <div class="desktop-only-btn">
+                        <a href="{% url 'login' %}" class="btn-primary" style="text-decoration: none;">Вход / Регистрация</a>
+                    </div>
+                    <div class="mobile-only-btn profile-trigger" id="guestTrigger" style="cursor: pointer;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </div>
+                    <div class="dropdown-menu" id="guestMenu">
+                        <ul class="dropdown-list">
+                            <li><a href="{% url 'theory' %}">Теория</a></li>
+                            <li><a href="{% url 'practice' %}">Практика</a></li>
+                            <li><a href="{% url 'tools' %}">Инструменты</a></li>
+                            <li><div style="height: 1px; background: var(--border-color); margin: 5px 20px;"></div></li>
+                            <li>
+                                <a href="{% url 'login' %}" style="color: var(--accent-blue); font-weight: 600;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                                    Вход / Регистрация
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -184,20 +222,36 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const trigger = document.getElementById('profileTrigger');
-            const menu = document.getElementById('profileMenu');
+            // Обработчик для авторизованного профиля
+            const profileTrigger = document.getElementById('profileTrigger');
+            const profileMenu = document.getElementById('profileMenu');
             
-            if (trigger && menu) {
-                // Переключение видимости меню профиля
-                trigger.addEventListener('click', function(e) {
+            if (profileTrigger && profileMenu) {
+                profileTrigger.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    menu.classList.toggle('active');
+                    profileMenu.classList.toggle('active');
                 });
                 
-                // Закрытие при клике вне области меню
                 document.addEventListener('click', function(e) {
-                    if (!menu.contains(e.target) && !trigger.contains(e.target)) {
-                        menu.classList.remove('active');
+                    if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
+                        profileMenu.classList.remove('active');
+                    }
+                });
+            }
+
+            // Обработчик для меню гостя (мобильная версия)
+            const guestTrigger = document.getElementById('guestTrigger');
+            const guestMenu = document.getElementById('guestMenu');
+            
+            if (guestTrigger && guestMenu) {
+                guestTrigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    guestMenu.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!guestMenu.contains(e.target) && !guestTrigger.contains(e.target)) {
+                        guestMenu.classList.remove('active');
                     }
                 });
             }

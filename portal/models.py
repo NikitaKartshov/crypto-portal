@@ -1,17 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, EmailValidator
 from django.core.exceptions import ValidationError
 import re
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+# Валидатор для почты (проверка доменов)
+def validate_email_domain(value):
+    allowed_domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'mail.ru', 'yandex.ru']
+    domain = value.split('@')[-1]
+    if domain not in allowed_domains:
+        raise ValidationError(f"Домен {domain} не разрешён для регистрации.")
 
 # Проверка, чтобы картинка не весила слишком много
 def validate_image_size(file):
     if file.size > 5 * 1024 * 1024:
         raise ValidationError('Изображение не должно превышать 5 МБ.')
-
 
 # Модель для статей (Теория, Новости и Главная)
 class Article(models.Model):
@@ -40,7 +45,7 @@ class Article(models.Model):
         blank=True,
         null=True,
         verbose_name="Изображение",
-        validators=[
+        validators=[ 
             FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif', 'webp']),
             validate_image_size,
         ]
@@ -78,7 +83,6 @@ class Article(models.Model):
     def __str__(self):
         return f"{self.get_section_display()}: {self.title}"
 
-
 # Храним данные о том, какие статьи прочитал пользователь
 class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
@@ -92,7 +96,6 @@ class UserProgress(models.Model):
 
     def __str__(self):
         return f"{self.user.username} — {self.article.title}"
-
 
 # Модель для практических задач и упражнений
 class PracticeTask(models.Model):
@@ -134,7 +137,6 @@ class PracticeTask(models.Model):
     def __str__(self):
         return f"[{self.get_difficulty_display()}] {self.title}"
 
-
 # Отслеживаем решение задач: время начала, конца и результат
 class UserPracticeProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
@@ -173,7 +175,6 @@ class UserPracticeProgress(models.Model):
         status = 'Решено' if self.is_completed else 'В процессе'
         return f"{self.user.username} — {self.task.title} ({status})"
 
-
 # Инструменты криптографии (шифраторы/дешифраторы на JS)
 class CryptoTool(models.Model):
     title = models.CharField(max_length=200, verbose_name="Название инструмента")
@@ -204,7 +205,6 @@ class CryptoTool(models.Model):
     def get_js_file(self):
         return f"portal/js/ciphers/{self.tool_type}.js"
 
-
 # Дополнительные данные пользователя (аватар, тема, ФИО)
 class UserProfile(models.Model):
     THEME_CHOICES = [
@@ -224,7 +224,7 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
         verbose_name="Аватар",
-        validators=[
+        validators=[ 
             FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif', 'webp']),
             validate_image_size,
         ]
@@ -256,13 +256,11 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"Профиль {self.user.username}"
 
-
 # Автоматическое создание профиля, когда создается новый User
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.get_or_create(user=instance)
-
 
 # Авто-сохранение профиля при сохранении User
 @receiver(post_save, sender=User)

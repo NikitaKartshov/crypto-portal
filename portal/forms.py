@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.safestring import mark_safe
 from .models import UserProfile, Article, PracticeTask, CryptoTool
+from .models import validate_email_domain
 
 # Форма для управления статьями (теория)
 class ArticleForm(forms.ModelForm):
@@ -31,7 +32,6 @@ class ToolForm(forms.ModelForm):
     """Форма создания/редактирования криптографического инструмента"""
     class Meta:
         model = CryptoTool
-        # Логика JS вынесена из БД в файлы для безопасности
         fields = ['title', 'description', 'tool_type', 'related_task']
         
         labels = {
@@ -49,7 +49,12 @@ class ToolForm(forms.ModelForm):
 
 # Расширенная форма регистрации нового пользователя
 class ExtendedRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True, label="Email")
+    # Добавлен валидатор для фильтрации доменов почты
+    email = forms.EmailField(
+        required=True, 
+        label="Email",
+        validators=[validate_email_domain]
+    )
     
     # Поле согласия с политикой конфиденциальности
     agree = forms.BooleanField(
@@ -63,6 +68,13 @@ class ExtendedRegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("username", "email")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
 
 
 # Форма обновления основных данных аккаунта (User)

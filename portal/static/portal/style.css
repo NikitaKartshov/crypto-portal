@@ -1,5 +1,5 @@
+/* КОРНЕВЫЕ ПЕРЕМЕННЫЕ */
 :root {
-    /* Основная палитра (Темная по умолчанию) */
     --bg-dark: #0f172a;
     --bg-card: #1e293b;
     --accent-blue: #22d3ee;
@@ -9,23 +9,22 @@
     --text-muted: #94a3b8;
     --border-color: #334155;
     
-    /* Размеры и общие параметры */
     --container-width: 1320px;
     --form-max-width: 900px;
     --transition: 0.2s ease;
 }
 
-/* Секция переменных для светлой темы (активируется через атрибут data-bs-theme) */
+/* СВЕТЛАЯ ТЕМА */
 [data-bs-theme="light"] {
     --bg-dark: #f1f5f9;
     --bg-card: #ffffff;
-    --accent-blue: #0891b2; /* Адаптированный контраст для светлого фона */
+    --accent-blue: #0891b2;
     --text-main: #0f172a;
     --text-muted: #475569;
     --border-color: #e2e8f0;
 }
 
-/* Глобальные сбросы и базовые стили текста */
+/* БАЗОВЫЕ СТИЛИ */
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-main);
     transition: color var(--transition);
@@ -45,7 +44,6 @@ a {
     color: var(--text-muted) !important;
 }
 
-/* Настройки скролла и базового лейаута */
 html {
     overflow-y: scroll;
     scrollbar-gutter: stable; 
@@ -65,7 +63,7 @@ body {
     transition: background-color var(--transition), color var(--transition);
 }
 
-/* ШАПКА САЙТА (Sticky Header) */
+/* ШАПКА САЙТА */
 .main-header {
     height: 80px;
     background-color: var(--bg-card);
@@ -85,10 +83,9 @@ body {
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 15px;
-    position: relative;                                     
+    position: relative;                                         
 }
 
-/* Логотип */
 .logo {
     flex: 1;
     display: flex;
@@ -101,13 +98,13 @@ body {
     font-weight: 800;
 }
 
-/* Центральная навигация */
+/* ЦЕНТРАЛЬНАЯ НАВИГАЦИЯ */
 .main-nav {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     flex: 0 0 auto;
-    z-index: 10;                     
+    z-index: 10;                      
 }
 
 .main-nav ul {
@@ -121,12 +118,12 @@ body {
 .main-nav a {
     color: var(--text-muted);
     font-weight: 500;
-    padding: 8px 0;                  
+    padding: 8px 0;                   
 }
 
 .main-nav a:hover { color: var(--accent-blue); }
 
-/* Блок профиля в шапке */
+/* БЛОК ПРОФИЛЯ */
 .user-profile {
     flex: 1;
     display: flex;
@@ -141,7 +138,7 @@ body {
     align-items: center;
     gap: 12px;
     padding: 0 15px;
-    height: 100%;
+    height: 80px;
     transition: background var(--transition);
     cursor: pointer;
 }
@@ -150,7 +147,6 @@ body {
 
 .username-text { color: var(--text-main); font-weight: 500; }
 
-/* Аватары */
 .avatar-placeholder, .avatar-large {
     background-color: #3b82f6;
     border-radius: 50%;
@@ -160,17 +156,11 @@ body {
     justify-content: center;
 }
 
-.avatar-placeholder { width: 32px; height: 32px; }
-.avatar-large { width: 48px; height: 48px; margin: 0 auto 10px; }
+.avatar-placeholder { width: 48px; height: 48px; }
+.avatar-large { width: 64px; height: 64px; margin: 0 auto 10px; }
 
-/* Индикатор выпадающего списка */
-.arrow-down-svg { 
-    transition: transform 0.3s; 
-    stroke: var(--text-muted);
-}
-.profile-trigger:hover .arrow-down-svg { transform: rotate(180deg); stroke: var(--accent-blue); }
 
-/* Выпадающее меню профиля */
+/* ВЫПАДАЮЩЕЕ МЕНЮ */
 .dropdown-menu {
     display: none;
     position: absolute;
@@ -185,7 +175,6 @@ body {
     z-index: 1001;
 }
 
-/* Показываем меню при ховере на родителя или само меню */
 .profile-trigger:hover + .dropdown-menu,
 .dropdown-menu:hover { display: block; }
 
@@ -197,9 +186,9 @@ body {
 
 .dropdown-user-name {
     color: var(--text-main) !important; 
-    font-size: 1.1rem;          
-    font-weight: 600;           
-    margin-top: 10px;           
+    font-size: 1.1rem;           
+    font-weight: 600;            
+    margin-top: 10px;            
     margin-bottom: 0;
 }
 
@@ -241,7 +230,7 @@ body {
     padding: 0 15px;
 }
 
-/* Карточки учебных модулей */
+/* КАРТОЧКИ МОДУЛЕЙ */
 .module-item {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -261,7 +250,6 @@ a.module-item:hover {
     transform: translateX(8px);
 }
 
-/* Подсветка выполненного модуля */
 .module-item.completed-highlight {
     border-color: var(--accent-green) !important;
     background-color: rgba(16, 185, 129, 0.05) !important;
@@ -280,7 +268,7 @@ a.module-item:hover {
 
 .module-title { font-weight: 600; font-size: 1.15rem; color: var(--text-main); margin: 0; }
 
-/* Кнопки */
+/* БЛОКИ КНОПОК */
 .btn-primary {
     background: #0891b2;
     border: none;
@@ -301,7 +289,7 @@ a.module-item:hover {
     color: #ffffff !important;
 }
 
-/* Формы ввода */
+/* ФОРМЫ ВВОДА */
 input[type="text"], input[type="password"], input[type="email"], select, textarea {
     width: 100%;
     padding: 12px;
@@ -331,7 +319,7 @@ input[type="checkbox"] {
     accent-color: var(--accent-blue);
 }
 
-/* Переключатели тем в настройках */
+/* ПЕРЕКЛЮЧАТЕЛИ ТЕМ */
 .theme-selection { display: flex; gap: 15px; margin-top: 20px; }
 
 .theme-btn {
@@ -355,7 +343,7 @@ input[type="checkbox"] {
     color: #0f172a;
 }
 
-/* ФУТЕР САЙТА */
+/* ФУТЕР БЛОКИ */
 .main-footer {
     background-color: var(--bg-card);
     padding: 40px 0;
@@ -374,7 +362,7 @@ input[type="checkbox"] {
     color: var(--accent-blue);
 }
 
-/* Карточки преимуществ на главной странице */
+/* КАРТОЧКИ ПРЕИМУЩЕСТВ */
 .feature-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -399,7 +387,7 @@ input[type="checkbox"] {
 .feature-card h3 { margin-bottom: 10px; font-weight: 700; }
 .feature-card p { margin-bottom: 20px; color: var(--text-muted); }
 
-/* ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ (UTILITIES) */
+/* ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ */
 .back-to-top {
     position: fixed;
     bottom: 30px;
@@ -429,4 +417,37 @@ input[type="checkbox"] {
 
 .accent-text {
     color: var(--accent-blue);
+}
+
+/* МОБИЛЬНАЯ АДАПТАЦИЯ */
+.mobile-nav-item {
+    display: none; 
+}
+.desktop-only-btn {
+    display: block; 
+}
+.mobile-only-btn {
+    display: none; 
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        display: none; 
+    }
+    
+    .mobile-nav-item {
+        display: block; 
+    }
+    
+    .desktop-only-btn {
+        display: none; 
+    }
+    
+    .mobile-only-btn {
+        display: flex; 
+        align-items: center;
+        color: var(--text-main);
+        height: 100%;
+        padding: 0 15px;
+    }
 }
