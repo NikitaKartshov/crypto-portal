@@ -1,12 +1,10 @@
 {% extends 'portal/base.html' %}
 {% block extra_css %}
 <style>
-    /* Отключаем ховер-эффекты карточки для формы, чтобы она была статичной */
     .static-form.module-item:hover {
         transform: none !important;
         transition: none !important;
     }
-    /* Стилизация полей ввода под темную тему */
     input[type="text"], input[type="url"], select, textarea {
         width: 100% !important;
         box-sizing: border-box;

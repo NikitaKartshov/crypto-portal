@@ -335,6 +335,14 @@ input[type="checkbox"] {
     transition: 0.3s;
 }
 
+/* Вот этот кусочек мы добавили, чтобы лучи солнца не обрезались */
+.theme-btn svg {
+	width: 22px !important;    
+    	height: 22px !important;
+    	padding: 2px;
+    	overflow: visible !important;
+}
+
 .theme-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
 
 .theme-btn.active {

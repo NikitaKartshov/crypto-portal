@@ -95,15 +95,25 @@
                 <h2 class="mb-4" style="color: var(--accent-blue); font-weight: 700;">Настройки интерфейса</h2>
                 <div class="card bg-card p-4 border-0 shadow-sm" style="background: var(--bg-card); border-radius: 15px; border: 1px solid var(--border-color) !important;">
                     <p class="text-secondary mb-3">Выберите цветовую схему портала:</p>
-                    <div class="d-flex gap-3">
+                    <div class="d-flex flex-wrap gap-3">
                         <button type="button" class="btn theme-btn {% if user.profile.theme == 'dark' %}active{% endif %}" data-theme-value="dark">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                             Темная
                         </button>
                         <button type="button" class="btn theme-btn {% if user.profile.theme == 'light' %}active{% endif %}" data-theme-value="light">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg>
-                            Светлая
-                        </button>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px !important; height: 24px !important; padding: 2px !important; overflow: visible !important;">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+    Светлая
+</button>
                     </div>
                 </div>
             {% endif %}

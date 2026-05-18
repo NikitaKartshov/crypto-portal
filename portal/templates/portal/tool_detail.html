@@ -3,8 +3,9 @@
 
 {% block content %}
 <div class="container py-5">
+    
+    {% if tool.tool_type == 'rsa' %}
     <div class="tool-card p-4 mb-4" style="background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);">
-        
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
             <div>
                 <h1 class="text-info h3 mb-1">{{ tool.title }}</h1>
@@ -15,9 +16,176 @@
                 <a href="{% url 'tool_update' tool.id %}" class="btn btn-sm btn-outline-warning">
                     <i class="bi bi-pencil"></i> Редактировать
                 </a>
-                <a href="{% url 'tool_delete' tool.id %}" class="btn btn-sm btn-outline-danger">
-                    <i class="bi bi-trash"></i> Удалить
+                <form action="{% url 'tool_delete' tool.id %}" method="POST" class="m-0" onsubmit="return confirm('Удалить инструмент безвозвратно?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i> Удалить
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row g-3 align-items-end p-3 mb-4 rounded" style="background: rgba(0,0,0,0.2); border: 1px dashed var(--border-color);">
+            <div class="col-md-3">
+                <button id="rsa-generate-btn" class="btn btn-info w-100 py-2 fw-bold text-dark" style="border-radius: 8px;">
+                     Сгенерировать ключи
+                </button>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-info small">Открытый ключ (e, n)</label>
+                <input type="text" id="rsa-pub-output" class="form-control text-white bg-dark border-secondary" readonly placeholder="Нажмите сгенерировать">
+            </div>
+            <div class="col-md-5">
+                <label class="form-label text-warning small">Закрытый ключ (d, n) <span class="text-danger">*секретно</span></label>
+                <input type="text" id="rsa-priv-output" class="form-control text-white bg-dark border-secondary" readonly placeholder="Нажмите сгенерировать">
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="p-3 h-100 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                    <h3 class="h6 text-info mb-3 border-bottom border-secondary pb-2">Отправитель</h3>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Исходный текст</label>
+                        <textarea id="rsa-input-plain" class="form-control" rows="4" placeholder="Введите текст..."></textarea>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-8">
+                            <input type="text" id="rsa-input-pubkey" class="form-control form-control-sm" placeholder="Открытый ключ (e, n)">
+                        </div>
+                        <div class="col-sm-4">
+                            <button id="rsa-insert-pub" class="btn btn-outline-info w-100 btn-sm">Вставить мой</button>
+                        </div>
+                    </div>
+                    <button id="rsa-encrypt-btn" class="btn btn-primary w-100 py-2 border-0 mb-3" style="border-radius: 8px; background-color: #0891b2 !important;">
+                        Зашифровать и переслать в Окно Б ➔
+                    </button>
+                    <div>
+                        <label class="form-label text-secondary small">Результат (Шифротекст в виде числа)</label>
+                        <textarea id="rsa-output-cipher" class="form-control text-info" rows="3" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="p-3 h-100 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                    <h3 class="h6 text-success mb-3 border-bottom border-secondary pb-2">Получатель</h3>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Полученный шифротекст</label>
+                        <textarea id="rsa-input-cipher" class="form-control" rows="4" placeholder="Сюда автоматически пересылается шифр..."></textarea>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-8">
+                            <input type="text" id="rsa-input-privkey" class="form-control form-control-sm" placeholder="Закрытый ключ (d, n)">
+                        </div>
+                        <div class="col-sm-4">
+                            <button id="rsa-insert-priv" class="btn btn-outline-success w-100 btn-sm">Вставить мой</button>
+                        </div>
+                    </div>
+                    <button id="rsa-decrypt-btn" class="btn btn-success w-100 py-2 border-0 mb-3" style="border-radius: 8px; background-color: #10b981 !important;">
+                        Расшифровать текст
+                    </button>
+                    <div>
+                        <label class="form-label text-secondary small">Восстановленный открытый текст</label>
+                        <textarea id="rsa-output-plain" class="form-control text-success" rows="3" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% elif tool.tool_type == 'xor' %}
+    <div class="tool-card p-4 mb-4" style="background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+            <div>
+                <h1 class="text-info h3 mb-1">{{ tool.title }}</h1>
+                <p class="text-secondary mb-0">{{ tool.description }}</p>
+            </div>
+            {% if user.is_staff %}
+            <div class="d-flex gap-2">
+                <a href="{% url 'tool_update' tool.id %}" class="btn btn-sm btn-outline-warning">
+                    <i class="bi bi-pencil"></i> Редактировать
                 </a>
+                <form action="{% url 'tool_delete' tool.id %}" method="POST" class="m-0" onsubmit="return confirm('Удалить инструмент безвозвратно?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i> Удалить
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row g-3 align-items-end p-3 mb-4 rounded" style="background: rgba(0,0,0,0.2); border: 1px dashed var(--border-color);">
+            <div class="col-md-6">
+                <label class="form-label text-secondary small">Режим обработки</label>
+                <select id="xor-mode" class="form-select bg-dark text-white border-secondary">
+                    <option value="text">Как обычный текст</option>
+                    <option value="binary">Как двоичный код (0 и 1)</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label text-secondary small">Ключ (символы или биты)</label>
+                <input type="text" id="xor-key" class="form-control text-white bg-dark border-secondary" placeholder="Введите ключ шифрования">
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="p-3 h-100 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                    <h3 class="h6 text-info mb-3 border-bottom border-secondary pb-2">Отправитель</h3>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Исходный текст</label>
+                        <textarea id="xor-input-plain" class="form-control" rows="4" placeholder="Введите текст или двоичный код..."></textarea>
+                    </div>
+                    <button id="xor-encrypt-btn" class="btn btn-primary w-100 py-2 border-0 mb-3" style="border-radius: 8px; background-color: #0891b2 !important;">
+                        Зашифровать и переслать в Окно Б ➔
+                    </button>
+                    <div>
+                        <label class="form-label text-secondary small">Результат (Шифротекст)</label>
+                        <textarea id="xor-output-cipher" class="form-control text-info" rows="3" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="p-3 h-100 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                    <h3 class="h6 text-success mb-3 border-bottom border-secondary pb-2">Получатель</h3>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Полученный шифротекст</label>
+                        <textarea id="xor-input-cipher" class="form-control" rows="4" placeholder="Сюда автоматически пересылается шифр..."></textarea>
+                    </div>
+                    <button id="xor-decrypt-btn" class="btn btn-success w-100 py-2 border-0 mb-3" style="border-radius: 8px; background-color: #10b981 !important;">
+                        Расшифровать текст
+                    </button>
+                    <div>
+                        <label class="form-label text-secondary small">Восстановленный открытый текст</label>
+                        <textarea id="xor-output-plain" class="form-control text-success" rows="3" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="tool-card p-4 mb-4" style="background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+            <div>
+                <h1 class="text-info h3 mb-1">{{ tool.title }}</h1>
+                <p class="text-secondary mb-0">{{ tool.description }}</p>
+            </div>
+            {% if user.is_staff %}
+            <div class="d-flex gap-2">
+                <a href="{% url 'tool_update' tool.id %}" class="btn btn-sm btn-outline-warning">
+                    <i class="bi bi-pencil"></i> Редактировать
+                </a>
+                <form action="{% url 'tool_delete' tool.id %}" method="POST" class="m-0" onsubmit="return confirm('Удалить инструмент безвозвратно?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i> Удалить
+                    </button>
+                </form>
             </div>
             {% endif %}
         </div>
@@ -26,7 +194,7 @@
             <div class="col-md-5">
                 <label id="label-input" class="form-label text-info">Исходный текст</label>
                 <textarea id="input-text" class="form-control" rows="6" placeholder="Введите текст здесь..."></textarea>
-            </div>	
+            </div>    
             
             <div class="col-md-2 text-center">
                 <button id="swap-btn" class="btn btn-outline-info d-inline-flex align-items-center justify-content-center rounded-circle"
@@ -54,6 +222,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <div class="mt-3">
         <a href="{% url 'tools' %}" class="btn btn-outline-secondary px-4 d-inline-flex align-items-center">
@@ -64,83 +233,160 @@
 {% endblock %}
 
 {% block extra_js %}
+{% if tool.tool_type %}
+    <script src="{% static tool.get_js_file %}"></script>
+{% endif %}
+
 <script>
-    // Динамическая загрузка JS-файла с логикой конкретного шифра
-    {% if tool.tool_type %}
-        const script = document.createElement('script');
-        script.src = "{% static tool.get_js_file %}";
-        script.onload = function() {
-            console.log('Шифр "{{ tool.tool_type }}" успешно загружен.');
-        };
-        script.onerror = function() {
-            alert('Ошибка загрузки алгоритма шифрования.');
-        };
-        document.head.appendChild(script);
-    {% endif %}
+    const toolType = "{{ tool.tool_type }}";
 
-    let isEncryptMode = true;
+    if (toolType === 'rsa') {
+        const generateBtn = document.getElementById('rsa-generate-btn');
+        const pubOutput = document.getElementById('rsa-pub-output');
+        const privOutput = document.getElementById('rsa-priv-output');
+        const insertPubBtn = document.getElementById('rsa-insert-pub');
+        const insertPrivBtn = document.getElementById('rsa-insert-priv');
+        const inputPlain = document.getElementById('rsa-input-plain');
+        const inputPubKey = document.getElementById('rsa-input-pubkey');
+        const encryptBtn = document.getElementById('rsa-encrypt-btn');
+        const outputCipher = document.getElementById('rsa-output-cipher');
+        const inputCipher = document.getElementById('rsa-input-cipher');
+        const inputPrivKey = document.getElementById('rsa-input-privkey');
+        const decryptBtn = document.getElementById('rsa-decrypt-btn');
+        const outputPlain = document.getElementById('rsa-output-plain');
 
-    // Элементы управления
-    const swapBtn = document.getElementById('swap-btn');
-    const actionBtn = document.getElementById('action-btn');
-    const inputLabel = document.getElementById('label-input');
-    const outputLabel = document.getElementById('label-output');
-    const inputText = document.getElementById('input-text');
-    const outputText = document.getElementById('output-text');
-    const cipherKey = document.getElementById('cipher-key');
+        let generatedPub = '';
+        let generatedPriv = '';
 
-    // Логика переключения между Шифрованием и Расшифрованием
-    swapBtn.addEventListener('click', () => {
-        isEncryptMode = !isEncryptMode;
-        
-        if (isEncryptMode) {
-            actionBtn.textContent = "Зашифровать";
-            actionBtn.style.setProperty('background-color', '#0891b2', 'important');
-            inputLabel.textContent = "Исходный текст";
-            inputLabel.className = "form-label text-info";
-            outputLabel.textContent = "Результат";
-        } else {
-            actionBtn.textContent = "Расшифровать";
-            actionBtn.style.setProperty('background-color', '#10b981', 'important');
-            inputLabel.textContent = "Шифротекст";
-            inputLabel.className = "form-label text-success";
-            outputLabel.textContent = "Открытый текст";
-        }
+        generateBtn.addEventListener('click', () => {
+            if (typeof generateRSAKeys === 'function') {
+                const keys = generateRSAKeys(61n, 53n);
+                generatedPub = `${keys.publicKey.e}, ${keys.publicKey.n}`;
+                generatedPriv = `${keys.privateKey.d}, ${keys.privateKey.n}`;
+                pubOutput.value = generatedPub;
+                privOutput.value = generatedPriv;
+            }
+        });
 
-        // Автоматический перенос текста из результата в ввод при смене режима
-        if (outputText.value) {
-            inputText.value = outputText.value;
-            outputText.value = '';
-        }
-    });
+        insertPubBtn.addEventListener('click', () => {
+            if(!generatedPub) return alert('Сначала сгенерируйте ключи!');
+            inputPubKey.value = generatedPub;
+        });
 
-    // Вызов функций encrypt/decrypt из подключенного внешнего JS-файла
-    actionBtn.addEventListener('click', () => {
-        const text = inputText.value.trim();
-        const key = cipherKey.value.trim();
+        insertPrivBtn.addEventListener('click', () => {
+            if(!generatedPriv) return alert('Сначала сгенерируйте ключи!');
+            inputPrivKey.value = generatedPriv;
+        });
 
-        if (!text) {
-            alert("Введите текст для обработки");
-            return;
-        }
+        encryptBtn.addEventListener('click', () => {
+            const text = inputPlain.value;
+            const key = inputPubKey.value.trim();
+            if (!text || !key) return alert('Введите текст и открытый ключ!');
 
-        try {
-            if (isEncryptMode) {
-                if (typeof encrypt === 'function') {
-                    outputText.value = encrypt(text, key);
-                } else {
-                    throw new Error("Функция encrypt() не найдена");
-                }
-            } else {
-                if (typeof decrypt === 'function') {
-                    outputText.value = decrypt(text, key);
-                } else {
-                    throw new Error("Функция decrypt() не найдена");
+            if (typeof encrypt === 'function') {
+                const cipherRes = encrypt(text, key);
+                outputCipher.value = cipherRes;
+                if (!cipherRes.startsWith("Ошибка")) {
+                    inputCipher.value = cipherRes;
                 }
             }
-        } catch (e) {
-            alert("Ошибка: " + e.message);
-        }
-    });
+        });
+
+        decryptBtn.addEventListener('click', () => {
+            const cipherText = inputCipher.value.trim();
+            const key = inputPrivKey.value.trim();
+            if (!cipherText || !key) return alert('Введите шифротекст и закрытый ключ!');
+
+            if (typeof decrypt === 'function') {
+                outputPlain.value = decrypt(cipherText, key);
+            }
+        });
+
+    } else if (toolType === 'xor') {
+        const encryptBtn = document.getElementById('xor-encrypt-btn');
+        const decryptBtn = document.getElementById('xor-decrypt-btn');
+        const inputPlain = document.getElementById('xor-input-plain');
+        const cipherKey = document.getElementById('xor-key');
+        const outputCipher = document.getElementById('xor-output-cipher');
+        const inputCipher = document.getElementById('xor-input-cipher');
+        const outputPlain = document.getElementById('xor-output-plain');
+        const xorMode = document.getElementById('xor-mode');
+
+        encryptBtn.addEventListener('click', () => {
+            if (typeof processXOR === 'function') {
+                try {
+                    const res = processXOR(inputPlain.value, cipherKey.value, xorMode.value);
+                    if (!res && (!inputPlain.value || !cipherKey.value)) {
+                        return alert("Заполните текст и ключ!");
+                    }
+                    outputCipher.value = res;
+                    inputCipher.value = res;
+                } catch (e) {
+                    alert(e.message);
+                }
+            }
+        });
+
+        decryptBtn.addEventListener('click', () => {
+            if (typeof processXOR === 'function') {
+                try {
+                    const res = processXOR(inputCipher.value, cipherKey.value, xorMode.value);
+                    if (!res && (!inputCipher.value || !cipherKey.value)) {
+                        return alert("Заполните шифротекст и ключ!");
+                    }
+                    outputPlain.value = res;
+                } catch (e) {
+                    alert(e.message);
+                }
+            }
+        });
+
+    } else {
+        let isEncryptMode = true;
+        const swapBtn = document.getElementById('swap-btn');
+        const actionBtn = document.getElementById('action-btn');
+        const inputLabel = document.getElementById('label-input');
+        const outputLabel = document.getElementById('label-output');
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const cipherKey = document.getElementById('cipher-key');
+
+        swapBtn.addEventListener('click', () => {
+            isEncryptMode = !isEncryptMode;
+            if (isEncryptMode) {
+                actionBtn.textContent = "Зашифровать";
+                actionBtn.style.setProperty('background-color', '#0891b2', 'important');
+                inputLabel.textContent = "Исходный текст";
+                inputLabel.className = "form-label text-info";
+                outputLabel.textContent = "Результат";
+            } else {
+                actionBtn.textContent = "Расшифровать";
+                actionBtn.style.setProperty('background-color', '#10b981', 'important');
+                inputLabel.textContent = "Шифротекст";
+                inputLabel.className = "form-label text-success";
+                outputLabel.textContent = "Открытый текст";
+            }
+            if (outputText.value) {
+                inputText.value = outputText.value;
+                outputText.value = '';
+            }
+        });
+
+        actionBtn.addEventListener('click', () => {
+            const text = inputText.value.trim();
+            const key = cipherKey.value.trim();
+            if (!text) return alert("Введите текст для обработки");
+
+            try {
+                if (isEncryptMode) {
+                    if (typeof encrypt === 'function') outputText.value = encrypt(text, key);
+                } else {
+                    if (typeof decrypt === 'function') outputText.value = decrypt(text, key);
+                }
+            } catch (e) {
+                alert("Ошибка: " + e.message);
+            }
+        });
+    }
 </script>
 {% endblock %}
