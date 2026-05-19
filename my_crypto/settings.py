@@ -152,6 +152,23 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": [
+            'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'ul', 'ol', 'li', 'strong', 'em', 'a', 'br', 'code', 'pre'
+        ],
+        "WHITELIST_ATTRS": [
+            'href', 'src', 'alt', 'class'
+        ],
+        "EXTENSIONS": [
+            'markdown.extensions.nl2br',       
+            'markdown.extensions.fenced_code',  
+        ],
+        "BLEACH": True,
+    }
+}
+
 # Системные настройки
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
